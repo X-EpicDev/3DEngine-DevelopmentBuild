@@ -1,32 +1,63 @@
 #include "raylib.h"
 
-#define SCREEN_WIDTH (800)
-#define SCREEN_HEIGHT (450)
+//------------------------------------------------------------------------------------
+// Program main entry point
+//------------------------------------------------------------------------------------
+int main(void)
+{
+    // Initialization
+    //--------------------------------------------------------------------------------------
+    const int screenWidth = 800;
+    const int screenHeight = 450;
 
-#define WINDOW_TITLE "Window title"
+    InitWindow(screenWidth, screenHeight, "3D Camera Test");
 
-int main() {
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
-    SetTargetFPS(60);
+    // create the camera
+    Camera3D camera = { 0 };
+    camera.position = (Vector3){ 10.0f, 10.0f, 10.0f }; // Camera position
+    camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
+    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
+    camera.fovy = 45.0f;                                // Camera field-of-view Y
+    camera.projection = CAMERA_PERSPECTIVE;             // Camera projection type
 
-    Texture2D texture = LoadTexture(ASSETS_PATH"test.png"); // Check README.md for how this works
+    Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
 
-    while (!WindowShouldClose()) {
+    DisableCursor();                    // Limit cursor to relative movement inside the window
+
+    SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second
+    //--------------------------------------------------------------------------------------
+
+    // Main game loop
+    while (!WindowShouldClose())        // Detect window close button or ESC key
+    {
+        // Update
+        //----------------------------------------------------------------------------------
+        UpdateCamera(&camera, CAMERA_FREE);
+
+        if (IsKeyPressed('Z')) camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };
+        //----------------------------------------------------------------------------------
+
+        // Draw
+        //----------------------------------------------------------------------------------
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
 
-        const int texture_x = SCREEN_WIDTH / 2 - texture.width / 2;
-        const int texture_y = SCREEN_HEIGHT / 2 - texture.height / 2;
-        DrawTexture(texture, texture_x, texture_y, WHITE);
+        BeginMode3D(camera);
 
-        const char* text = "3DEngine-Development (Now In Process)";
-        const Vector2 text_size = MeasureTextEx(GetFontDefault(), text, 20, 1);
-        DrawText(text, SCREEN_WIDTH / 2 - text_size.x / 2, SCREEN_HEIGHT / 2 -text_size.y, 20, BLACK);
+        DrawCube(cubePosition, 2.0f, 2.0f, 2.0f, RED);
+        DrawCubeWires(cubePosition, 2.0f, 2.0f, 2.0f, BLACK);
+
+        EndMode3D();
 
         EndDrawing();
+        //----------------------------------------------------------------------------------
     }
-    CloseWindow();
+
+    // De-Initialization
+    //--------------------------------------------------------------------------------------
+    CloseWindow();        // Close window and OpenGL context
+    //--------------------------------------------------------------------------------------
 
     return 0;
 }
