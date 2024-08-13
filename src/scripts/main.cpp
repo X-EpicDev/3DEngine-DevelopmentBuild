@@ -9,6 +9,8 @@ int main(void)
     //--------------------------------------------------------------------------------------
     const int screenWidth = 800;
     const int screenHeight = 450;
+    float deltaTime = GetFrameTime();
+
 
     InitWindow(screenWidth, screenHeight, "3D Camera Test");
 
@@ -23,6 +25,7 @@ int main(void)
     Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
 
     DisableCursor();                    // Limit cursor to relative movement inside the window
+    UpdateCamera(&camera, CAMERA_FREE);
 
     SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -32,9 +35,13 @@ int main(void)
     {
         // Update
         //----------------------------------------------------------------------------------
-        UpdateCamera(&camera, CAMERA_FREE);
 
-        if (IsKeyPressed('Z')) camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };
+        deltaTime += GetFrameTime()*1000;
+
+        if(deltaTime >= 16.66f) {
+            UpdateCamera(&camera, CAMERA_FREE);
+            deltaTime = GetFrameTime()*1000;
+        }
         //----------------------------------------------------------------------------------
 
         // Draw
@@ -42,6 +49,8 @@ int main(void)
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
+        DrawText(TextFormat("Delta Time: %f", deltaTime), 0, 0, 20, BLACK);
+        //DrawFPS(1,1);
 
         BeginMode3D(camera);
 
