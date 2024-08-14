@@ -27,7 +27,7 @@ int main(void)
     DisableCursor();                    // Limit cursor to relative movement inside the window
     UpdateCamera(&camera, CAMERA_FREE);
 
-    SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second
+    //SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
 
     // Main game loop
@@ -50,11 +50,11 @@ int main(void)
 
         ClearBackground(RAYWHITE);
         DrawText(TextFormat("Delta Time: %f", deltaTime), 0, 0, 20, BLACK);
-        //DrawFPS(1,1);
+        DrawFPS(0,20);
 
         BeginMode3D(camera);
 
-        DrawCube(cubePosition, 2.0f, 2.0f, 2.0f, RED);
+        DrawCube({2.0, 1.0, 0.0}, 2.0f, 4.0f, 2.0f, RED);
         DrawCubeWires(cubePosition, 2.0f, 2.0f, 2.0f, BLACK);
 
         EndMode3D();
