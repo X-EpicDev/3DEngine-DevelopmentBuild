@@ -1,9 +1,9 @@
 #include "raylib.h"
-
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
-int main(void)
+
+int WinMain()
 {
     // Initialization
     //--------------------------------------------------------------------------------------
@@ -16,10 +16,10 @@ int main(void)
 
     // create the camera
     Camera3D camera = { 0 };
-    camera.position = (Vector3){ 10.0f, 10.0f, 10.0f }; // Camera position
+    camera.position = (Vector3){ 0.0f, 10.0f, 10.0f }; // Camera position
     camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
     camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
-    camera.fovy = 45.0f;                                // Camera field-of-view Y
+    camera.fovy = 35.0f;                                // Camera field-of-view Y
     camera.projection = CAMERA_PERSPECTIVE;             // Camera projection type
 
     Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
@@ -27,7 +27,11 @@ int main(void)
     DisableCursor();                    // Limit cursor to relative movement inside the window
     UpdateCamera(&camera, CAMERA_FREE);
 
-    //SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second
+    int across = 10;
+    int back = 10;
+    int up = 10;
+
+    SetTargetFPS(60);                   // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
 
     // Main game loop
@@ -42,6 +46,7 @@ int main(void)
             UpdateCamera(&camera, CAMERA_FREE);
             deltaTime = GetFrameTime()*1000;
         }
+        if (IsKeyPressed('Z')) camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };
         //----------------------------------------------------------------------------------
 
         // Draw
@@ -53,9 +58,26 @@ int main(void)
         DrawFPS(0,20);
 
         BeginMode3D(camera);
+        for(int i = 0; i <= across; i++)
+        {
+            for(int j = 0; j < back; j++)
+            {
+                for(int k = 0; k < up; k++)
+                {
 
-        DrawCube({2.0, 1.0, 0.0}, 2.0f, 4.0f, 2.0f, RED);
-        DrawCubeWires(cubePosition, 2.0f, 2.0f, 2.0f, BLACK);
+                    DrawCube(cubePosition, 1.0f, 1.0f, 1.0f, BLACK);
+                    DrawCubeWires(cubePosition, 1.0f, 1.0f, 1.0f, BLUE);
+                    cubePosition.y += 1.5;
+                }
+                cubePosition.y = 0;
+                cubePosition.z -= 1.5;
+            }
+            cubePosition.z = 0;
+            cubePosition.x += 1.5;
+        }
+        cubePosition.x = 0;
+
+
 
         EndMode3D();
 
